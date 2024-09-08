@@ -8,7 +8,7 @@ const applicationPreparationFormParams = [
   { label: "Employment Status", name: "employmentStatus", type: "select" },
   { label: "Mobile Number", name: "mobileNumber", type: "phone" },
   { label: "Residency Status", name: "residencyStatus", type: "select" },
-  { label: "Residental Address", name: "residentalAddress" },
+  { label: "Residental Address", name: "residentalAddress", type: "address" },
 ];
 
 export { applicationPreparationFormParams };

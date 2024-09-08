@@ -8,9 +8,11 @@ import {
   DatePicker,
   Skeleton,
 } from "antd";
-import { MailOutlined, PhoneOutlined } from "@ant-design/icons";
+import { MailOutlined } from "@ant-design/icons";
 import ContentHeader from "./ContentHeader";
 import dayjs from "dayjs";
+import AddressAutocomplete from "./AddressAutocomplete";
+import PhoneInput from "./PhoneInput";
 
 const getFieldStyle = (index) => ({
   maxWidth: "none",
@@ -23,8 +25,15 @@ const getFieldStyle = (index) => ({
       : 0,
 });
 
-const FormItem = ({ name, index, ...props }) => {
-  return <AntForm.Item style={getFieldStyle(index)} name={name} {...props} />;
+const FormItem = ({ name, index, item, ...props }) => {
+  return (
+    <AntForm.Item
+      rules={[{ type: item?.type || "text" }]}
+      style={getFieldStyle(index)}
+      name={name}
+      {...props}
+    />
+  );
 };
 
 function Form(props) {
@@ -35,10 +44,12 @@ function Form(props) {
     title,
     titleStyle,
     loading,
+    form,
+    onFinish,
     ...otherProps
   } = props;
 
-  const getFieldType = (type, name) => {
+  const getFieldType = (type, name, formId) => {
     let field;
     switch (type) {
       case "select":
@@ -64,13 +75,11 @@ function Form(props) {
           />
         );
         break;
+      case "address":
+        field = <AddressAutocomplete form={form} name={name} formid={formId} />;
+        break;
       case "phone":
-        field = (
-          <Input
-            placeholder="None"
-            suffix={<PhoneOutlined style={{ color: "rgba(0, 0, 0, 0.25)" }} />}
-          />
-        );
+        field = <PhoneInput />;
         break;
       default:
         field = <Input placeholder="None" />;
@@ -98,10 +107,11 @@ function Form(props) {
           ) : (
             <FormItem
               index={index + 1}
+              item={item}
               name={field ? [field.name, name] : name}
               label={label}
             >
-              {getFieldType(item?.type, item.name)}
+              {getFieldType(item?.type, item.name, field.name)}
             </FormItem>
           )}
         </Col>
@@ -124,6 +134,7 @@ function Form(props) {
 
   return (
     <AntForm
+      form={form}
       layout="vertical"
       initialValues={validateInitialValues(initialValues)}
       {...otherProps}

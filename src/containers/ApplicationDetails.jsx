@@ -117,9 +117,14 @@ function ApplicationDetails() {
                   <Button
                     disabled={!isFormActive}
                     style={{ fontWeight: 700, fontSize: 14 }}
-                    onClick={() => {
-                      form.submit();
-                      setFormActive(!isFormActive);
+                    onClick={async () => {
+                      try {
+                        await form.validateFields();
+                        form.submit();
+                        setFormActive(!isFormActive);
+                      } catch {
+                        return;
+                      }
                     }}
                   >
                     Save changes
@@ -140,7 +145,7 @@ function ApplicationDetails() {
                       titleStyle={{ marginBottom: 26 }}
                       form={form}
                       disabled={!isFormActive}
-                      onFinish={(formData) => handleSubmit(formData)}
+                      onFinish={handleSubmit}
                       params={applicationPreparationFormParams}
                       selectData={{
                         title: [
